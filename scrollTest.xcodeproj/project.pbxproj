@@ -14,6 +14,8 @@
 		6F019E48238F97C900252B63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F019E47238F97C900252B63 /* Assets.xcassets */; };
 		6F019E4B238F97C900252B63 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F019E49238F97C900252B63 /* LaunchScreen.storyboard */; };
 		6F019E53238FA30C00252B63 /* UIView+Constraints+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F019E52238FA30C00252B63 /* UIView+Constraints+Extension.swift */; };
+		6F019E552390EB9A00252B63 /* NewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F019E542390EB9A00252B63 /* NewVC.swift */; };
+		6F019E572390FEEB00252B63 /* NewVCWithConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F019E562390FEEB00252B63 /* NewVCWithConstraints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		6F019E4A238F97C900252B63 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6F019E4C238F97C900252B63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F019E52238FA30C00252B63 /* UIView+Constraints+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constraints+Extension.swift"; sourceTree = "<group>"; };
+		6F019E542390EB9A00252B63 /* NewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewVC.swift; sourceTree = "<group>"; };
+		6F019E562390FEEB00252B63 /* NewVCWithConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewVCWithConstraints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,8 @@
 				6F019E3E238F97C800252B63 /* AppDelegate.swift */,
 				6F019E40238F97C800252B63 /* SceneDelegate.swift */,
 				6F019E42238F97C800252B63 /* ViewController.swift */,
+				6F019E542390EB9A00252B63 /* NewVC.swift */,
+				6F019E562390FEEB00252B63 /* NewVCWithConstraints.swift */,
 				6F019E52238FA30C00252B63 /* UIView+Constraints+Extension.swift */,
 				6F019E44238F97C800252B63 /* Main.storyboard */,
 				6F019E47238F97C900252B63 /* Assets.xcassets */,
@@ -143,7 +149,9 @@
 			files = (
 				6F019E43238F97C800252B63 /* ViewController.swift in Sources */,
 				6F019E53238FA30C00252B63 /* UIView+Constraints+Extension.swift in Sources */,
+				6F019E572390FEEB00252B63 /* NewVCWithConstraints.swift in Sources */,
 				6F019E3F238F97C800252B63 /* AppDelegate.swift in Sources */,
+				6F019E552390EB9A00252B63 /* NewVC.swift in Sources */,
 				6F019E41238F97C800252B63 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

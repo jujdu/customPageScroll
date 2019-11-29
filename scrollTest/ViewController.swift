@@ -67,7 +67,7 @@ class ViewController: UIViewController {
         imageView.image = UIImage(named: "cloudBG")
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .clear
-//        imageView.alpha = 0.8
+        //        imageView.alpha = 0.8
         return imageView
     }()
     
@@ -94,8 +94,8 @@ class ViewController: UIViewController {
     
     var currentPage: CGFloat = 0 {
         willSet {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            if newValue != self.currentPage {
+            if currentPage != newValue {
+                let generator = UIImpactFeedbackGenerator(style: .medium)
                 generator.impactOccurred()
             }
         }
@@ -112,8 +112,9 @@ class ViewController: UIViewController {
         scrollView.addSubview(pageControl)
         pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        
-         cloudBG1.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -200), size: .zero)
+        scrollView.addSubview(cloudBG)
+        cloudBG.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -600), size: .zero)
+        cloudBG1.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -200), size: .zero)
         
         scrollView.frame = CGRect(x: 0,
                                   y: 0,
@@ -125,7 +126,7 @@ class ViewController: UIViewController {
                                      y: 0,
                                      width: self.view.frame.width * 3,
                                      height: self.view.frame.height)
-
+        
         pictureBG.frame = CGRect(x: 0,
                                  y: 0,
                                  width: containerView.frame.width,
@@ -138,7 +139,7 @@ class ViewController: UIViewController {
                              size: CGSize(width: scrollView.contentSize.width,
                                           height: scrollView.contentSize.height))
         pictureBG.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -200), size: .zero)
-
+        
         scrollView.addSubview(firstView)
         scrollView.addSubview(secondView)
         scrollView.addSubview(thirdView)
@@ -158,26 +159,31 @@ class ViewController: UIViewController {
                                  width: scrollView.frame.width * 0.5,
                                  height: scrollView.frame.width * 0.5)
         //MARK: - Setup Back Views
-
         
-        scrollView.addSubview(cloudBG)
-        cloudBG.anchor(top: scrollView.topAnchor, leading: scrollView.leadingAnchor, bottom: scrollView.bottomAnchor, trailing: scrollView.trailingAnchor, padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -600), size: .zero)
+        
+        
     }
-
-
+    
 }
 
 extension ViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        print(scrollView.contentOffset)
-        let xOffset = scrollView.contentOffset.x * 0.3
+        //        print(scrollView.contentOffset)
+        let xOffset = scrollView.contentOffset.x * 0.2
         let contentRectXOffset = xOffset / cloudBG.frame.size.width
         cloudBG.layer.contentsRect = CGRect(x: contentRectXOffset, y: 0, width: 1, height: 1)
         
-        let xOffset1 = scrollView.contentOffset.x * 0.4
+        let xOffset1 = scrollView.contentOffset.x * 0.3
         let contentRectXOffset1 = xOffset1 / cloudBG1.frame.size.width
         cloudBG1.layer.contentsRect = CGRect(x: contentRectXOffset1, y: 0, width: 1, height: 1)
+        
+        let offsetX = scrollView.contentOffset.x
+        let scrollWidth = (scrollView.contentSize.width / 3) - (view.frame.width / 2)
+        print(offsetX )
+        if Int(offsetX) > Int(scrollWidth) {
+            
+        }
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
