@@ -11,7 +11,7 @@ import UIKit
 class NewVCWithConstraints: UIViewController {
     
     //MARK: - Front Views
-    let contentScrollView: UIScrollView = {
+    let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.backgroundColor = .clear
@@ -23,7 +23,6 @@ class NewVCWithConstraints: UIViewController {
     let contanerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
         return view
     }()
     
@@ -94,106 +93,110 @@ class NewVCWithConstraints: UIViewController {
     }()
     
     //MARK: - Properties
-    var currentPage: CGFloat = 0 {
-        willSet {
-            if currentPage != newValue {
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
-            }
-        }
-    }
     
+    var regularConstraints: [NSLayoutConstraint] = []
+    var compactConstraints: [NSLayoutConstraint] = []
+    var currentPage: CGFloat = 0
+
     //MARK: - Life cycle
+    
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        contentScrollView.delegate = self
         
-        //MARK: - Setup Back Views
-        view.addSubview(pictureBG)
-        view.addSubview(cloudBG2)
-        view.addSubview(cloudBG1)
-        
-        pictureBG.anchor(top: view.topAnchor,
-                         leading: view.leadingAnchor,
-                         bottom: view.bottomAnchor,
-                         trailing: view.trailingAnchor,
-                         padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -200),
-                         size: .zero)
-        cloudBG2.anchor(top: view.topAnchor,
-                        leading: view.leadingAnchor,
-                        bottom: view.bottomAnchor,
-                        trailing: view.trailingAnchor,
-                        padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -200),
-                        size: .zero)
-        cloudBG1.anchor(top: view.topAnchor,
-                        leading: view.leadingAnchor,
-                        bottom: view.bottomAnchor,
-                        trailing: view.trailingAnchor,
-                        padding: UIEdgeInsets(top: 0, left: -200, bottom: 0, right: -600),
-                        size: .zero)
+        scrollView.delegate = self
         
         //MARK: - Setup Front View
-        contentScrollView.addSubview(firstView)
-        contentScrollView.addSubview(secondView)
-        contentScrollView.addSubview(thirdView)
-//        contentScrollView.addSubview(contanerView)
-        view.addSubview(contentScrollView)
-        view.addSubview(pageControl)
-        contentScrollView.fillSuperview()
-//        contanerView.fillSuperview()
-//        let contanerViewWidthAnchor = contanerView.widthAnchor.constraint(equalTo: view.widthAnchor)
-//        contanerView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-//        contanerViewWidthAnchor.isActive = true
-
-        if UIDevice.current.orientation.isPortrait {
-            firstView.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor, constant: view.frame.width * 0.5 * 0.5).isActive = true
-            firstView.centerYAnchor.constraint(equalTo: contentScrollView.centerYAnchor).isActive = true
-            firstView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
-            firstView.heightAnchor.constraint(equalTo: firstView.widthAnchor).isActive = true
-
-            secondView.leadingAnchor.constraint(equalTo: firstView.trailingAnchor, constant: (view.frame.width * 0.5 * 0.5) * 2).isActive = true
-            secondView.centerYAnchor.constraint(equalTo: contentScrollView.centerYAnchor).isActive = true
-            secondView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true
-            secondView.heightAnchor.constraint(equalTo: secondView.widthAnchor).isActive = true
-
-            secondView.trailingAnchor.constraint(equalTo: contentScrollView.trailingAnchor, constant: -(view.frame.width * 0.5 * 0.5)).isActive = true
-        } else {
-            firstView.leadingAnchor.constraint(equalTo: contentScrollView.leadingAnchor, constant: view.frame.width * 0.5 * 0.5).isActive = true
-            firstView.centerYAnchor.constraint(equalTo: contentScrollView.centerYAnchor).isActive = true
-            firstView.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
-            firstView.heightAnchor.constraint(equalTo: firstView.widthAnchor).isActive = true
-
-            secondView.leadingAnchor.constraint(equalTo: firstView.trailingAnchor, constant: (view.frame.width * 0.5 * 0.5) * 2).isActive = true
-            secondView.centerYAnchor.constraint(equalTo: contentScrollView.centerYAnchor).isActive = true
-            secondView.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
-            secondView.heightAnchor.constraint(equalTo: secondView.widthAnchor).isActive = true
-
-            secondView.trailingAnchor.constraint(equalTo: contentScrollView.trailingAnchor, constant: -(view.frame.width * 0.5 * 0.5)).isActive = true
-        }
-
-        pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        view.addSubview(scrollView)
+        scrollView.addSubview(contanerView)
+        scrollView.addSubview(firstView)
+        scrollView.addSubview(secondView)
+        scrollView.addSubview(thirdView)
+        scrollView.fillSuperview()
+        contanerView.fillSuperview()
+        scrollView.backgroundColor = .green
+        contanerView.backgroundColor = .white
+        setupCompactConstraits()
+        setupRegularConstraits()
+        activateConstraints()
     }
-
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (_) in
+            let xOffset = self.view.frame.width * self.currentPage
+            self.scrollView.contentOffset = CGPoint(x: xOffset, y: 0)
+        }, completion: nil)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        activateConstraints()
+    }
+    
+    func setupRegularConstraits() {
+        let widthToView = view.frame.width * 0.5 * 0.5
+        regularConstraints = [
+            contanerView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            firstView.leadingAnchor.constraint(equalTo: contanerView.leadingAnchor, constant: widthToView),
+            firstView.centerYAnchor.constraint(equalTo: contanerView.centerYAnchor),
+            firstView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
+            firstView.heightAnchor.constraint(equalTo: firstView.widthAnchor),
+            secondView.leadingAnchor.constraint(equalTo: firstView.trailingAnchor, constant: widthToView * 2),
+            secondView.centerYAnchor.constraint(equalTo: contanerView.centerYAnchor),
+            secondView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
+            secondView.heightAnchor.constraint(equalTo: secondView.widthAnchor),
+            secondView.trailingAnchor.constraint(equalTo: contanerView.trailingAnchor, constant: -widthToView),
+        ]
+    }
+    
+    func setupCompactConstraits() {
+        let widthToView = (view.frame.height * 0.5) - (view.frame.width * 0.5 * 0.5)
+        print(widthToView)
+        compactConstraints = [
+            contanerView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            firstView.leadingAnchor.constraint(equalTo: contanerView.leadingAnchor, constant: widthToView),
+            firstView.centerYAnchor.constraint(equalTo: contanerView.centerYAnchor),
+            firstView.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
+            firstView.heightAnchor.constraint(equalTo: firstView.widthAnchor),
+            secondView.leadingAnchor.constraint(equalTo: firstView.trailingAnchor, constant: widthToView * 2),
+            secondView.centerYAnchor.constraint(equalTo: contanerView.centerYAnchor),
+            secondView.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
+            secondView.heightAnchor.constraint(equalTo: secondView.widthAnchor),
+            secondView.trailingAnchor.constraint(equalTo: contanerView.trailingAnchor, constant: -widthToView),
+        ]
+    }
+    
+    func activateConstraints() {
+        NSLayoutConstraint.deactivate(compactConstraints)
+        NSLayoutConstraint.deactivate(regularConstraints)
+        if self.traitCollection.verticalSizeClass == .regular {
+            print("regular")
+            NSLayoutConstraint.activate(regularConstraints)
+        } else if traitCollection.verticalSizeClass == .compact {
+            print("compact")
+            NSLayoutConstraint.activate(compactConstraints)
+        } else {
+            print("unspec")
+        }
+    }
+    
+    override var shouldAutorotate: Bool {
+        return true
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .allButUpsideDown
+    }
+    
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return .portrait
+    }
+    
 }
 
+//MARK: - UIScrollViewDelegate
 extension NewVCWithConstraints: UIScrollViewDelegate {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        generateHorizontalScrollAnimation(to: pictureBG, in: scrollView, velocity: 0.1)
-        generateHorizontalScrollAnimation(to: cloudBG1, in: scrollView, velocity: 0.2)
-        generateHorizontalScrollAnimation(to: cloudBG2, in: scrollView, velocity: 0.3)
-    }
-    
-    private func generateHorizontalScrollAnimation(to view: UIView, in scrollView: UIScrollView, velocity: CGFloat) {
-        let xOffset = scrollView.contentOffset.x * velocity
-        let contentRectXOffset = xOffset / view.frame.size.width
-        view.layer.contentsRect = CGRect(x: contentRectXOffset, y: 0, width: 1, height: 1)
-    }
-    
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         currentPage = targetContentOffset.pointee.x / view.frame.width
-        pageControl.currentPage = Int(currentPage)
     }
 }
-
